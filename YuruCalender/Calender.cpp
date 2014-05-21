@@ -90,17 +90,6 @@
 
 */
 #include "Calender.h"
-#include "conio.h"//kbhit, getch
-#pragma warning(disable:4996)//kbhit 오류 방지
-
-
-#define DEF_BACKCOLOR	BLACK
-#define DEF_FORECOLOR	LIGHTGRAY
-
-#define W 119
-#define A 97
-#define S 115
-#define D 100
 
 int main()
 {
@@ -108,9 +97,11 @@ int main()
 		연 월 일 우선구현
 	*/
 
+	sndPlaySound("../op.wav", SND_ASYNC);//에길의 유루유리잼
 
-	int year, month, num1 = 0, num2 = 0;
+	int year = 0, month = 0;
 	int num1 = 0, num2 = 0;//반짝거릴때 쓸거당
+	int n = 1;
 
 	struct tm *nowtime;
 	time_t nowtimer;
@@ -118,6 +109,8 @@ int main()
 	nowtimer = time(NULL);    // 현재 시각을 초 단위로 얻기
 	nowtime = localtime(&nowtimer); // 초 단위의 시간을 분리하여 구조체에 넣기
 
+	year = 1900 + nowtime->tm_year; // tm_year은 1900년 기준
+	month = nowtime->tm_mon + 1; // tm_mon은 0부터 시작
 
 	COORD ATL;//아틀리에 좌표!
 	ATL.X = 0;
@@ -125,11 +118,11 @@ int main()
 
 	Calender(year, month, nowtime, &ATL);
 
-
 	//요일 색상 표시를 해봅시다.
 
 	while (true)
 	{
+
 		if (month==5) //아틀리에 생일. 5월이니까 month == 5
 		{
 			int colors[] = {BROWN, YELLOW};//반짝 반짝잼
@@ -140,6 +133,9 @@ int main()
 					gotoxy(ATL.X, ATL.Y);
 					textcolor(BLACK, colors[num2 % 2]);
 					printf("%d", 26);//내 생일
+
+					gotoxy(ATL.X, ATL.Y);//X+17 Y-4
+					textcolor(BLACK, colors[num2 % 2]);
 					printf("%d", 2);//미사카 생일
 					num2++;
 
@@ -154,24 +150,31 @@ int main()
 
 			}
 		}
+
 		else if (month == 1) //짓수형 생일, 지수2가 만든것처럼 사라지게 해드리겠습니다 껄껄
 		{
-			int colors[] = { WHITE, LIGHTGRAY, DARKGRAY, BLACK };
+			int colors[] = { WHITE, LIGHTGRAY, DARKGRAY, BLACK};//저엄저엄 사라진다아아낄낄 
+			char str[7] = {"앗카링"};
 
-			if (ATL.X != 0 || ATL.Y != 0)
+			if (ATL.X != 0 || ATL.Y!= 0)
 			{
-				if (num1 % 60 == 0)//처언천히 사.라.진다.아아아
+				if (num1 % 50 == 0)//앗카링~
 				{
 					gotoxy(ATL.X, ATL.Y);
 					textcolor(BLACK, colors[num2 % 4]);
-					printf("%4d", 6);
+					printf("%3c%c", str[2*n-2], str[2*n-1]);	
+
+					sndPlaySound("../Akkaring.wav", SND_ASYNC);//앗카링 브금 재생
 					num2++;
+					n++;
+
 					if (num2 == 4)
 					{
 						num1 = 0;
 						num2 = 0;
 						ATL.X = 0;
 						ATL.Y = 0;
+						n = 1;
 					}
 				}
 
@@ -196,7 +199,7 @@ int main()
 
 		if (kbhit())
 		{
-			int key = getch();//위에서 W A S D를 숫자로 선언했으니까
+			int key = getch();//헤더 W A S D를 숫자로 선언했으니까
 
 			switch (key)
 			{
@@ -228,6 +231,7 @@ int main()
 				break;
 			}
 
+			Calender(year, month, nowtime, &ATL);
 		}
 		
 	}
@@ -240,6 +244,7 @@ int main()
 //이제 달력에 날짜를 출력해보으리자
 void Calender(int year, int month, struct tm *nowtime, COORD *ATL)//연 월 현재시간 아틀리에좌표계
 {
+
 	/*
 		달력 연 월이 바뀔때마다 콘솔창을 모두 지워줘야 하므로
 		system("cls");를 사용해야된다. 하지만 이걸 사용하면 위에 printf()로 표현한
@@ -247,14 +252,21 @@ void Calender(int year, int month, struct tm *nowtime, COORD *ATL)//연 월 현재시
 	*/
 
 	//기본틀
+	
 
 	char Week_Name[7][4] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };//날짜
-	int a, b;//달력을 행렬로 표시했을때.. 행과 열이 되어줄 친구들
-	int day, now_year, now_month, now_day, cnt;
+	int a = 0, b = 0;//달력을 행렬로 표시했을때.. 행과 열이 되어줄 친구들
+	int day = 0, now_year = 0, now_month = 0, now_day = 0, cnt = 0;
 	int startofworld = JeraWeek(year, month, 1);
 	int endofworld = YNday(year, month) - 1;
 
-	printf("      Yuru Calender\n");
+	now_year = 1900 + nowtime->tm_year;//1900년 기준으로 하라는데 왜그런건진 모르겠다
+	now_month = nowtime->tm_mon + 1;//0에서 시작
+	now_day = nowtime->tm_mday;
+
+	textcolor(LIGHTGRAY, BLACK); // 화면 비울때 색상
+	system("cls"); // 화면을 날려버려어엇
+
 	printf("     << %4d년%2d월 >>\n", year, month);
 
 	//요일 표시 및 색상 결정
@@ -268,7 +280,80 @@ void Calender(int year, int month, struct tm *nowtime, COORD *ATL)//연 월 현재시
 	printf(" %s\n", Week_Name[6]);
 
 	//요일 배치하자
+
+
+	for (a = 0; a<6; a++) // 행행행행행
+	{
+		for (b = 0; b<7; b++) // 여여여여여여열
+		{
+			cnt = (a * 7) + b + 1;
+			if (b == SUNDAY) // 일
+				textcolor(RED, DEF_BACKCOLOR); // 딮다크레드
+			else if (b == SATURDAY) // 토요일
+				textcolor(BLUE, DEF_BACKCOLOR); // 딮다크블루
+			else
+				textcolor(DARKGRAY, DEF_BACKCOLOR); // 딮다크함
+			//구분선
+			if (a == SUNDAY && b < startofworld) // 첫주에서 b가 1보다 작을때는 지난달을 출력해보자.
+				day = YNday(year, month != 1 ? month - 1 : 12) - (startofworld - b - 1);
+			else if (a >= 4 && (cnt - startofworld - 1) > endofworld) // 마지막주에서 b가 마지막날보다 크면 다음달 첫째주를 출력
+				day = (cnt - startofworld - 1) - endofworld;
+
+			else
+			{
+				if (b == SUNDAY) // 일
+					textcolor(LIGHTRED, DEF_BACKCOLOR); // 밝은빨간색으로
+				else if (b == SATURDAY) // 토
+					textcolor(LIGHTBLUE, DEF_BACKCOLOR); // 밝은파란색으로
+				else
+					textcolor(LIGHTGRAY, DEF_BACKCOLOR); // 밝은색으로
+				day = cnt - startofworld;
+				if (now_year == year && now_month == month && now_day == day)
+					textcolor(BLACK, WHITE); // 오늘날짜는 따로 표시를 해줘야하니까 하얀색으로 해보자
+				if (Holiday(month, day))
+				{
+\
+					if (month == 5 && day == 26)
+					{
+						COORD tmp;
+						tmp.Y = a + 3;
+						tmp.X = b * 4 + 3;
+						(*ATL) = tmp;
+					}
+
+					//X+17 Y-4
+					else if (month == 5 && day == 2)
+					{
+						COORD tmp;
+						tmp.Y = a - 1;
+						tmp.X = b * 4 + 20;
+						(*ATL) = tmp;
+					}
+
+					else if (month == 1 && day == 6)
+					{
+						COORD tmp;
+						tmp.Y = a + 3;
+						tmp.X = b * 4 + 1;
+						(*ATL) = tmp;
+					}
+					else
+						textcolor(LIGHTRED, DEF_BACKCOLOR); // 휴일을 빨강빨강으로
+				}
+
+			}
+			printf("%4d", day);
+		}
+		printf("\n");
+
+	}
+	// 다썻으니까 색상도 바꿔줘야제 안그럼?
+	textcolor(DEF_FORECOLOR, DEF_BACKCOLOR);
+	printf("달력이동 설명\nW,S 연도이동\nA,D 월이동");
+
 }
+
+
 
 
 

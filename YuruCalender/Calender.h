@@ -1,6 +1,22 @@
 #include<stdio.h>
 #include<windows.h>
 #include<time.h>
+#include "conio.h"//kbhit, getch
+#include"mmsystem.h"// 이게필요하다는데 음악할떄.
+#include <string.h> //글씨지나가게 하자
+
+#pragma warning(disable:4996)//kbhit 오류 방지
+#pragma comment(lib, "winmm.lib")//음악
+
+
+
+#define DEF_BACKCOLOR	BLACK
+#define DEF_FORECOLOR	LIGHTGRAY
+
+#define W 119
+#define A 97
+#define S 115
+#define D 100
 
 #define BLACK 0
 #define BLUE 1
@@ -27,6 +43,9 @@
 #define FRIDAY 5
 #define SATURDAY 6
 
+void Calender(int year, int month, struct tm *nowtime, COORD *ATL);
+
+
 void gotoxy(int, int); //커서 옮기는 함수다
 void textcolor(int foreground, int background);
 void wait(clock_t);
@@ -34,6 +53,8 @@ void wait(clock_t);
 int YunNyun(int); //윤년 계산 함수, 29일, 28일로 나눈다.
 int YNday(int, int);
 int JeraWeek(int, int, int);
+
+
 
 
 
@@ -78,15 +99,35 @@ int YNday(int year, int month)
 		return 29;
 	}
 	else
-		return month_day[month];
+		return month_day[month - 1];
 }
 
-bool Holiday()//휴일이면 참 아니면 거짓을 리턴
+bool Holiday(int month, int day)//휴일이면 참 아니면 거짓을 리턴
 {
 	int i;
-	int Holidays[][] = {
-		{ 1, 1 }, { 3, 1 }, { 5, 5 }, { 6, 6 }, { 8, 15 }, { 10, 3 }, { 10, 9 }, { 12, 25 }, { 1, 6 }, { 5, 26 }, {}
-	}
+
+	int Holidays[11][2] = {
+		{ 1, 1 }, 
+		{ 3, 1 }, 
+		{ 5, 5 }, 
+		{ 6, 6 }, 
+		{ 8, 15 }, 
+		{ 10, 3 }, 
+		{ 10, 9 }, 
+		{ 12, 25 }, 
+		{ 1, 6 }, 
+		{ 5, 26 },
+		{ 5, 2 }//미사카 생일이 분명있는데 왜 안될까
+		};
+
+	for (i = 0; i < (sizeof(Holidays) / (2 * sizeof(int))); i++)
+	{
+		if (Holidays[i][0] == month && Holidays[i][1] == day)
+		{
+			return true;
+		}
+	}	
+	return false;
 }
 
 int JeraWeek(int year, int month, int day) //제라의 공식
