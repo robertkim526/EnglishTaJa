@@ -199,7 +199,8 @@ int main()
 
 			switch (key)
 			{
-			case A:
+			case 'A':
+			case 'a':
 				if (month != 1)//1월이 아니면 걍 월을 감소시키면 되긋네.
 					month--;
 				else
@@ -209,7 +210,8 @@ int main()
 					month = 12;
 				}
 				break;
-			case D:
+			case 'D':
+			case 'd':
 				if (month != 12)//12월이 아니면 증가만 시키면 됨
 					month++;
 				else
@@ -218,10 +220,12 @@ int main()
 					month = 1;
 				}
 				break;
-			case W:
+			case 'W':
+			case 'w':
 				year++;//얜 걍 연도만 증가해주면 된다
 				break;
-			case S:
+			case 'S':
+			case 's':
 				if (year > 0) 
 					year--;//0년 이상이면 그냥 연도를 내리면 된다. 0년이하까지 갈일이 있을까 싶다만
 				break;

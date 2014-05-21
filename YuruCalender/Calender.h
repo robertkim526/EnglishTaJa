@@ -13,11 +13,6 @@
 #define DEF_BACKCOLOR	BLACK
 #define DEF_FORECOLOR	LIGHTGRAY
 
-#define W 119
-#define A 97
-#define S 115
-#define D 100
-
 #define BLACK 0
 #define BLUE 1
 #define GREEN 2
