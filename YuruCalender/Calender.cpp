@@ -160,7 +160,7 @@ int main()
 					textcolor(BLACK, colors[num2 % 4]);
 					printf("%3c%c", str[2*n-2], str[2*n-1]);	
 
-					sndPlaySound("../Akkaring.wav", SND_ASYNC);//앗카링 브금 재생
+					sndPlaySound("../Akkaring1.wav", SND_ASYNC);//앗카링 브금 재생
 					num2++;
 					n++;
 
