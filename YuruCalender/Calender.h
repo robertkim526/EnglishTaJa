@@ -106,7 +106,7 @@ bool Holiday(int month, int day)//휴일이면 참 아니면 거짓을 리턴
 {
 	int i;
 
-	int Holidays[11][2] = {
+	int Holidays[10][2] = {
 		{ 1, 1 }, 
 		{ 3, 1 }, 
 		{ 5, 5 }, 
@@ -116,8 +116,7 @@ bool Holiday(int month, int day)//휴일이면 참 아니면 거짓을 리턴
 		{ 10, 9 }, 
 		{ 12, 25 }, 
 		{ 1, 6 }, 
-		{ 5, 26 },
-		{ 5, 2 }//미사카 생일이 분명있는데 왜 안될까
+		{ 5, 26 }
 		};
 
 	for (i = 0; i < (sizeof(Holidays) / (2 * sizeof(int))); i++)

@@ -133,10 +133,6 @@ int main()
 					gotoxy(ATL.X, ATL.Y);
 					textcolor(BLACK, colors[num2 % 2]);
 					printf("%d", 26);//내 생일
-
-					gotoxy(ATL.X, ATL.Y);//X+17 Y-4
-					textcolor(BLACK, colors[num2 % 2]);
-					printf("%d", 2);//미사카 생일
 					num2++;
 
 					if (num2 == 2)
@@ -318,15 +314,6 @@ void Calender(int year, int month, struct tm *nowtime, COORD *ATL)//연 월 현재시
 						COORD tmp;
 						tmp.Y = a + 3;
 						tmp.X = b * 4 + 3;
-						(*ATL) = tmp;
-					}
-
-					//X+17 Y-4
-					else if (month == 5 && day == 2)
-					{
-						COORD tmp;
-						tmp.Y = a - 1;
-						tmp.X = b * 4 + 20;
 						(*ATL) = tmp;
 					}
 
